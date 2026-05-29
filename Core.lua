@@ -4,6 +4,8 @@ MacroIconSearch = MIS
 local OIconDataProvider = nil
 local icons = {}
 
+local searchWorkerFrame = CreateFrame("Frame")
+
 EventUtil.ContinueOnAddOnLoaded(addonName, function()
     local hooks = { "MacroPopupFrame", "GearManagerPopupFrame" }
     
@@ -24,8 +26,18 @@ EventUtil.ContinueOnAddOnLoaded(addonName, function()
                 MacroIconSearchFrame.SpellIDBox:SetText("")
                 MacroIconSearchFrame.IconIDBox:SetText("")
                 MacroIconSearchFrame.ItemIDBox:SetText("")
-                wipe(icons)
+                
+                searchWorkerFrame:SetScript("OnUpdate", nil)
                 if MIS.searchCoroutine then MIS.searchCoroutine = nil end
+                
+                wipe(icons)
+                
+                -- Run garbage collection twice to completely flush Lua's internal string hashes
+                collectgarbage("collect")
+                collectgarbage("collect")
+                
+                -- Force the WoW client to update addon memory usage for trackers like ElvUI
+                if UpdateAddOnMemoryUsage then UpdateAddOnMemoryUsage() end
             end)
         end
     end
@@ -71,8 +83,8 @@ end
 function MIS:OnSpellIDEnter(editBox)
     local id = tonumber(editBox:GetText())
     if id then
-        local sInfo = C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(id)
-        if sInfo and sInfo.iconID then SetDirectIcon(sInfo.iconID) end
+        local iconID = C_Spell and C_Spell.GetSpellTexture and C_Spell.GetSpellTexture(id)
+        if iconID then SetDirectIcon(iconID) end
     end
     editBox:SetText("")
     editBox:ClearFocus()
@@ -124,20 +136,31 @@ function MIS:StartSearch(mode, query)
 
         if mode == "SPELL" then
             for id = 1, 200000 do
-                local sInfo = C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(id)
-                if sInfo and sInfo.name and sInfo.iconID and sInfo.name:lower():find(query, 1, true) then
-                    tinsert(icons, sInfo.iconID)
+                local name = C_Spell and C_Spell.GetSpellName and C_Spell.GetSpellName(id)
+                if name and name:lower():find(query, 1, true) then
+                    local iconID = C_Spell.GetSpellTexture(id)
+                    if iconID then
+                        tinsert(icons, iconID)
+                    end
                 end
+                
+                -- Yield to keep FPS smooth
                 if id % 2500 == 0 then coroutine.yield() end
+                
+                -- Incrementally dump string memory during the loop to prevent RAM spikes
+                if id % 10000 == 0 then collectgarbage("step", 250) end
             end
         end
 
         parent.IconSelector:UpdateSelections()
         print("|cFF00FFFFMacroIconSearch:|r Search complete! Found " .. #icons .. " icons.")
+        
+        -- Final cleanup and UI refresh
+        collectgarbage("collect")
+        if UpdateAddOnMemoryUsage then UpdateAddOnMemoryUsage() end
     end)
 
-    local coFrame = CreateFrame("Frame")
-    coFrame:SetScript("OnUpdate", function(s)
+    searchWorkerFrame:SetScript("OnUpdate", function(s)
         if self.searchCoroutine and coroutine.status(self.searchCoroutine) ~= "dead" then
             local startTime = debugprofilestop()
             while debugprofilestop() - startTime < 8 do
