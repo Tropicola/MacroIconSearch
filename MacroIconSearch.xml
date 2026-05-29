@@ -1,6 +1,4 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-UI_shared.xsd">
-
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ UI_shared.xsd">
     <EditBox name="MacroIconSearchEditBoxTemplate" letters="16" historyLines="0" virtual="true">
         <Size x="182" y="20"/>
         <Layers>
@@ -28,32 +26,30 @@ UI_shared.xsd">
                 </Texture>
             </Layer>
         </Layers>
-        <Scripts>
-        </Scripts>
         <FontString inherits="ChatFontNormal"/>
     </EditBox>
 
-	<Frame name="MacroIconSearchFrame" enableKeyboard="true" enableMouse="true" hidden="true">
+    <Frame name="MacroIconSearchFrame" enableKeyboard="true" enableMouse="true" hidden="true">
         <Size x="425" y="65"/>
         <Frames>
             <Frame parentKey="Border" inherits="DialogBorderDarkTemplate"/>
             <Frame parentKey="CoverFrame" frameLevel="1" enableMouse="true" enableKeyboard="true" hidden="true">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="UIParent"/>
-					<Anchor point="BOTTOMRIGHT" relativeTo="UIParent"/>
-				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND" textureSubLevel="-1">
-						<Texture setAllPoints="true">
-							<Color r="0" g="0" b="0" a="0.5"/>
-						</Texture>
-					</Layer>
-				</Layers>
-				<Scripts>
-					<OnKeyDown function="nop"/>
-					<OnKeyUp function="nop"/>
-				</Scripts>
-			</Frame>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="UIParent"/>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="UIParent"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND" textureSubLevel="-1">
+                        <Texture setAllPoints="true">
+                            <Color r="0" g="0" b="0" a="0.5"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnKeyDown function="nop"/>
+                    <OnKeyUp function="nop"/>
+                </Scripts>
+            </Frame>
             <EditBox parentKey="IconSearchQueryEditBox" inherits="MacroIconSearchEditBoxTemplate">
                 <Anchors>
                     <Anchor point="LEFT" x="20" y="-5"/>
@@ -61,17 +57,17 @@ UI_shared.xsd">
                 <Layers>
                     <Layer level="BACKGROUND">
                         <FontString parentKey="Text" text="Search Spell" inherits="GameFontHighlightSmall" justifyH="LEFT">
-							<Size x="103" y="38"/>
-							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="-10"/>
-							</Anchors>
-						</FontString>
+                            <Size x="103" y="38"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="-10"/>
+                            </Anchors>
+                        </FontString>
                     </Layer>
                 </Layers>
                 <Scripts>
-                    <OnTextChanged> MacroIconSearch:OnTextChanged(self) </OnTextChanged>
-                    <OnEnterPressed> MacroIconSearch:OnEnterPressed(self) </OnEnterPressed>
-                    <OnEscapePressed> self:ClearFocus() </OnEscapePressed>
+                    <OnTextChanged>MacroIconSearch:OnTextChanged(self)</OnTextChanged>
+                    <OnEnterPressed>MacroIconSearch:OnEnterPressed(self)</OnEnterPressed>
+                    <OnEscapePressed>self:ClearFocus()</OnEscapePressed>
                 </Scripts>
             </EditBox>
             <EditBox parentKey="IconCustomEditBox" numeric="true" inherits="MacroIconSearchEditBoxTemplate">
@@ -81,15 +77,15 @@ UI_shared.xsd">
                 <Layers>
                     <Layer level="BACKGROUND">
                         <FontString parentKey="Text" text="Set Icon ID" inherits="GameFontHighlightSmall" justifyH="LEFT">
-							<Size x="103" y="38"/>
-							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="-10"/>
-							</Anchors>
-						</FontString>
+                            <Size x="103" y="38"/>
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="-10"/>
+                            </Anchors>
+                        </FontString>
                     </Layer>
                 </Layers>
                 <Scripts>
-                    <OnEnterPressed> MacroIconSearch:SetCustomIcon(self, self:GetText()) </OnEnterPressed>
+                    <OnEnterPressed>MacroIconSearch:SetCustomIcon(self, self:GetText())</OnEnterPressed>
                 </Scripts>
             </EditBox>
         </Frames>
