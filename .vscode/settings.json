@@ -1,9 +1,13 @@
 {
-    "Lua.diagnostics.globals": [
-        "MacroPopupFrame",
-        "IconDataProviderMixin",
-        "EventUtil",
-        "GenerateClosure",
-        "GearManagerPopupFrame"
-    ]
+"Lua.diagnostics.globals": [
+"MacroPopupFrame",
+"IconDataProviderMixin",
+"EventUtil",
+"GenerateClosure",
+"GearManagerPopupFrame",
+"C_AddOns",
+"C_Spell",
+"GetSpellInfo",
+"IsAddOnLoaded"
+]
 }
