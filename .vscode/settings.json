@@ -1,9 +1,18 @@
 {
     "Lua.diagnostics.globals": [
         "MacroPopupFrame",
+        "GearManagerPopupFrame",
         "IconDataProviderMixin",
         "EventUtil",
         "GenerateClosure",
-        "GearManagerPopupFrame"
+        "CreateAndInitFromMixin",
+        "CreateFrame",
+        "C_Spell",
+        "C_Item",
+        "debugprofilestop",
+        "geterrorhandler",
+        "wipe",
+        "tinsert",
+        "_G"
     ]
 }
