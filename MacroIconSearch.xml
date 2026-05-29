@@ -1,97 +1,125 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-UI_shared.xsd">
-
-    <EditBox name="MacroIconSearchEditBoxTemplate" letters="16" historyLines="0" virtual="true">
-        <Size x="182" y="20"/>
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ UI_shared.xsd">
+    <EditBox name="MacroIconSearchEditBoxTemplate" letters="40" historyLines="0" virtual="true" autoFocus="false">
         <Layers>
             <Layer level="BACKGROUND">
-                <Texture parentKey="IconSelectorPopupNameLeft" file="Interface\ClassTrainerFrame\UI-ClassTrainer-FilterBorder">
-                    <Size x="12" y="29"/>
-                    <Anchors>
-                        <Anchor point="TOPLEFT" x="-11" y="0"/>
-                    </Anchors>
-                    <TexCoords left="0" right="0.09375" top="0" bottom="1.0"/>
+                <Texture setAllPoints="true">
+                    <Color r="0" g="0" b="0" a="1"/>
                 </Texture>
-                <Texture parentKey="IconSelectorPopupNameMiddle" file="Interface\ClassTrainerFrame\UI-ClassTrainer-FilterBorder">
-                    <Size x="175" y="29"/>
+            </Layer>
+            <Layer level="BORDER">
+                <Texture>
                     <Anchors>
-                        <Anchor point="LEFT" relativeKey="$parent.IconSelectorPopupNameLeft" relativePoint="RIGHT"/>
+                        <Anchor point="TOPLEFT" x="1" y="-1"/>
+                        <Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
                     </Anchors>
-                    <TexCoords left="0.09375" right="0.90625" top="0" bottom="1.0"/>
-                </Texture>
-                <Texture parentKey="IconSelectorPopupNameRight" file="Interface\ClassTrainerFrame\UI-ClassTrainer-FilterBorder">
-                    <Size x="12" y="29"/>
-                    <Anchors>
-                        <Anchor point="LEFT" relativeKey="$parent.IconSelectorPopupNameMiddle" relativePoint="RIGHT"/>
-                    </Anchors>
-                    <TexCoords left="0.90625" right="1.0" top="0" bottom="1.0"/>
+                    <Color r="0.08" g="0.08" b="0.08" a="0.95"/>
                 </Texture>
             </Layer>
         </Layers>
+        <FontString inherits="SystemFont_Shadow_Med1"/>
         <Scripts>
+            <OnLoad>
+                self:SetTextInsets(5, 5, 0, 0)
+            </OnLoad>
+            <OnEscapePressed>self:ClearFocus()</OnEscapePressed>
         </Scripts>
-        <FontString inherits="ChatFontNormal"/>
     </EditBox>
 
-	<Frame name="MacroIconSearchFrame" enableKeyboard="true" enableMouse="true" hidden="true">
-        <Size x="425" y="65"/>
+    <Frame name="MacroIconSearchFrame" enableKeyboard="true" enableMouse="true" hidden="true">
+        <!-- Reduced height to 140 since we removed a row -->
+        <Size x="450" y="140"/>
         <Frames>
             <Frame parentKey="Border" inherits="DialogBorderDarkTemplate"/>
-            <Frame parentKey="CoverFrame" frameLevel="1" enableMouse="true" enableKeyboard="true" hidden="true">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="UIParent"/>
-					<Anchor point="BOTTOMRIGHT" relativeTo="UIParent"/>
-				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND" textureSubLevel="-1">
-						<Texture setAllPoints="true">
-							<Color r="0" g="0" b="0" a="0.5"/>
-						</Texture>
-					</Layer>
-				</Layers>
-				<Scripts>
-					<OnKeyDown function="nop"/>
-					<OnKeyUp function="nop"/>
-				</Scripts>
-			</Frame>
-            <EditBox parentKey="IconSearchQueryEditBox" inherits="MacroIconSearchEditBoxTemplate">
+            
+            <!-- ROW 1 -->
+            <EditBox parentKey="SpellSearchBox" inherits="MacroIconSearchEditBoxTemplate">
+                <Size x="180" y="22"/>
                 <Anchors>
-                    <Anchor point="LEFT" x="20" y="-5"/>
+                    <Anchor point="TOPLEFT" x="25" y="-30"/>
                 </Anchors>
                 <Layers>
-                    <Layer level="BACKGROUND">
-                        <FontString parentKey="Text" text="Search Spell" inherits="GameFontHighlightSmall" justifyH="LEFT">
-							<Size x="103" y="38"/>
-							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="-10"/>
-							</Anchors>
-						</FontString>
+                    <Layer level="OVERLAY">
+                        <FontString text="Spell Name:" inherits="SystemFont_Shadow_Med1" justifyH="LEFT">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="5"/>
+                            </Anchors>
+                        </FontString>
                     </Layer>
                 </Layers>
                 <Scripts>
-                    <OnTextChanged> MacroIconSearch:OnTextChanged(self) </OnTextChanged>
-                    <OnEnterPressed> MacroIconSearch:OnEnterPressed(self) </OnEnterPressed>
-                    <OnEscapePressed> self:ClearFocus() </OnEscapePressed>
+                    <OnTextChanged>if self:GetText() == "" then MacroIconSearch:ResetSearch() end</OnTextChanged>
+                    <OnEnterPressed>MacroIconSearch:OnSpellSearchEnter(self)</OnEnterPressed>
                 </Scripts>
             </EditBox>
-            <EditBox parentKey="IconCustomEditBox" numeric="true" inherits="MacroIconSearchEditBoxTemplate">
+
+            <EditBox parentKey="SpellIDBox" numeric="true" inherits="MacroIconSearchEditBoxTemplate">
+                <Size x="100" y="22"/>
                 <Anchors>
-                    <Anchor point="RIGHT" x="-20" y="-5"/>
+                    <Anchor point="LEFT" relativeKey="$parent.SpellSearchBox" relativePoint="RIGHT" x="40" y="0"/>
                 </Anchors>
                 <Layers>
-                    <Layer level="BACKGROUND">
-                        <FontString parentKey="Text" text="Set Icon ID" inherits="GameFontHighlightSmall" justifyH="LEFT">
-							<Size x="103" y="38"/>
-							<Anchors>
-								<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="-10"/>
-							</Anchors>
-						</FontString>
+                    <Layer level="OVERLAY">
+                        <FontString text="Set Spell ID:" inherits="SystemFont_Shadow_Med1" justifyH="LEFT">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="5"/>
+                            </Anchors>
+                        </FontString>
                     </Layer>
                 </Layers>
                 <Scripts>
-                    <OnEnterPressed> MacroIconSearch:SetCustomIcon(self, self:GetText()) </OnEnterPressed>
+                    <OnEnterPressed>MacroIconSearch:OnSpellIDEnter(self)</OnEnterPressed>
+                </Scripts>
+            </EditBox>
+
+            <!-- ROW 2 -->
+            <EditBox parentKey="IconIDBox" numeric="true" inherits="MacroIconSearchEditBoxTemplate">
+                <Size x="100" y="22"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.SpellSearchBox" relativePoint="BOTTOMLEFT" x="0" y="-30"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString text="Set Icon ID:" inherits="SystemFont_Shadow_Med1" justifyH="LEFT">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="5"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnterPressed>MacroIconSearch:OnIconIDEnter(self)</OnEnterPressed>
+                </Scripts>
+            </EditBox>
+
+            <EditBox parentKey="ItemIDBox" numeric="true" inherits="MacroIconSearchEditBoxTemplate">
+                <Size x="100" y="22"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.SpellIDBox" relativePoint="BOTTOMLEFT" x="0" y="-30"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <FontString text="Set Item ID:" inherits="SystemFont_Shadow_Med1" justifyH="LEFT">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="0" y="5"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnEnterPressed>MacroIconSearch:OnItemIDEnter(self)</OnEnterPressed>
                 </Scripts>
             </EditBox>
         </Frames>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString text="Press Enter after typing a name or ID to search / set." inherits="GameFontHighlight" justifyH="CENTER">
+                    <Anchors>
+                        <!-- Increased Y offset to 20 to prevent clipping -->
+                        <Anchor point="BOTTOM" x="0" y="20"/>
+                    </Anchors>
+                    <Color r="1" g="0.82" b="0" a="1"/>
+                </FontString>
+            </Layer>
+        </Layers>
     </Frame>
 </Ui>
